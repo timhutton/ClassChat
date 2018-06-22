@@ -121,30 +121,34 @@ body {
     margin: 5px;
     height: 300px;
     overflow: auto;
+    font-size: xx-large;
+}
+.button {
+    font-size: xx-large;
 }
 </style>
 
 </head>
 <body>
 
-Hello World!
+<h1>Hello World!</h1>
 
 <div id="login"> <!-- They see this if they are not logged-in -->
 
   <form action="javascript:login(un.value, pw.value)">
     Username: <input type="text" id="un"><br>
     Password: <input type="password" id="pw"><br>
-    <input type="submit" value="Submit">
+    <input type="submit" value="Submit" class="button">
   </form> 
 
 </div>
 
 <div id="logged_in" style="display: none;">  <!-- They only see this if they are logged-in -->
 
-  <p>Username: <span class="username" id="username">blank</span> <input type="button" value="sign out" onclick="logout();"></p>
+  <p>Username: <span class="username" id="username">blank</span> <input type="button" value="sign out" onclick="logout();" class="button"></p>
   <div class="group_chat" id="group_chat"></div>
   <form action="javascript:sendGroupMessage(msg.value)">
-    Message: <input type="text" id="msg"> <input type="submit" value="send">
+    Message: <input type="text" id="msg" size="60" class="button"> <input type="submit" value="send" class="button">
   </form> 
 
 </div>
