@@ -29,7 +29,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     document.getElementById('logged_in').style.display="block";
     document.getElementById('login').style.display="none";
-    after_login(user);
+    on_login(user);
   } else {
     document.getElementById('logged_in').style.display="none";
     document.getElementById('login').style.display="block";
@@ -46,19 +46,15 @@ function login(un,pw) {
     });
 }
 
-function after_login(user) {
+function on_login(user) {
     // display their username
     document.getElementById("username").innerHTML = user.email.substring(0, user.email.lastIndexOf("@"));
-    document.getElementById("group_chat").innerHTML = "";
     // make a live connection to the group chat messages
+    document.getElementById("group_chat").innerHTML = "";
     var groupChatRef = firebase.database().ref('group_chat/messages');
     groupChatRef.on('child_added', function(data) {
       updateGroupChat(data.val());
     });
-}
-
-function updateGroupChat(msg) {
-    document.getElementById("group_chat").innerHTML += msg.user + ' : ' + msg.text + '<br>';
 }
 
 function logout() {
@@ -77,16 +73,51 @@ function get_current_username() {
     return user.email.substring(0, user.email.lastIndexOf("@"));
 }
 
+function get_pretty_time(t) {
+    var now = Date.now();
+    var sec = (now-t)/1000;
+    if( sec < 60 ) { return sec.toFixed(0) + 's ago'; }
+    var min = sec / 60;
+    if( min < 60 ) { return min.toFixed(0) + 'min ago'; }
+    var hour = min / 60;
+    if( hour < 48 ) { return hour.toFixed(0) + 'hr ago'; }
+    var day = hour / 24;
+    if( day < 365*2 ) { return day.toFixed(0) + 'days ago'; }
+    var year = day / 365;
+    return year.toFixed(0) + 'years ago';
+}
+
 function sendGroupMessage(msg) {
+    var message = {
+        user: get_current_username(),
+        time: Date.now(),
+        text: msg
+    };
     var groupChatRef = firebase.database().ref('group_chat/messages');
     var newGroupMessageRef = groupChatRef.push();
-    newGroupMessageRef.set({
-        user: get_current_username(),
-        text: msg
-    });
+    newGroupMessageRef.set(message);
+    document.getElementById("msg").value = ""; // clear the input box
+}
+
+function updateGroupChat(msg) {
+    var box = document.getElementById("group_chat");
+    box.innerHTML += msg.user + ' : ' + msg.text + ' (' + get_pretty_time(msg.time) + ')<br>';
+    box.scrollTop = box.scrollHeight; // scroll to the bottom
 }
 
 </script>
+
+<style>
+body {background-color: powderblue;}
+.username {color: blue;}
+.group_chat {
+    border: 1px solid black;
+    padding: 30px;
+    margin: 5px;
+    max-height: 100px;
+    overflow: auto;
+}
+</style>
 
 </head>
 <body>
@@ -105,8 +136,8 @@ Hello World!
 
 <div id="logged_in" style="display: none;">  <!-- They only see this if they are logged-in -->
 
-  <p>Username: <b><span id="username">blank</span></b> <input type="button" value="sign out" onclick="logout();"></p>
-  <div id="group_chat"></div>
+  <p>Username: <span class="username" id="username">blank</span> <input type="button" value="sign out" onclick="logout();"></p>
+  <div class="group_chat" id="group_chat"></div>
   <form action="javascript:sendGroupMessage(msg.value)">
     Message: <input type="text" id="msg"> <input type="submit" value="send">
   </form> 
