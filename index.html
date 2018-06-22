@@ -1,13 +1,133 @@
+<!DOCTYPE html>
 <html>
 <head>
- <title>Class Chat!</title>
+
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+
+<title>Class Chat!</title>
+ 
+<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-database.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyA2F8Dx3vrsLeFhS2E4fuILF5KmQKgWzWg",
+    authDomain: "classchat-becd1.firebaseapp.com",
+    databaseURL: "https://classchat-becd1.firebaseio.com",
+    projectId: "classchat-becd1",
+    storageBucket: "classchat-becd1.appspot.com",
+    messagingSenderId: "533251351200"
+  };
+  firebase.initializeApp(config);
+</script>
+
+<script type="text/javascript">
+
+function showClass(class_label) {
+  var divsToShow = document.getElementsByClassName(class_label);
+  for(var i = 0; i < divsToShow.length; i++)
+  {
+    divsToShow[i].style.display="block";
+  }
+}
+
+function hideClass(class_label) {
+  var divsToHide = document.getElementsByClassName(class_label);
+  for(var i = 0; i < divsToHide.length; i++)
+  {
+    divsToHide[i].style.display="none";
+  }
+}
+
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    hideClass('login');
+    showClass('logged_in');
+    after_login(user);
+  } else {
+    hideClass('logged_in');
+    showClass('login');
+  }
+});
+
+function login(un,pw) {
+    var email = un+'@sq3.org.uk';
+    firebase.auth().signInWithEmailAndPassword(email, pw).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      alert('Failed to login: '+errorMessage+'\n('+errorCode+')');
+    });
+}
+
+function after_login(user) {
+    // display their username
+    document.getElementById("username").innerHTML = user.email.substring(0, user.email.lastIndexOf("@"));
+    document.getElementById("group_chat").innerHTML = "";
+    // make a live connection to the group chat messages
+    var groupChatRef = firebase.database().ref('group_chat/messages');
+    groupChatRef.on('child_added', function(data) {
+      updateGroupChat(data.val());
+    });
+}
+
+function updateGroupChat(msg) {
+    document.getElementById("group_chat").innerHTML += msg.user + ' : ' + msg.text + '<br>';
+}
+
+function logout() {
+    firebase.auth().signOut().then(function() {
+      // Sign-out successful.
+    }).catch(function(error) {
+      // An error happened.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      alert('Failed to logout: '+errorMessage+'\n('+errorCode+')');
+    });
+}
+
+function get_current_username() {
+    var user = firebase.auth().currentUser;
+    return user.email.substring(0, user.email.lastIndexOf("@"));
+}
+
+function sendGroupMessage(msg) {
+    var groupChatRef = firebase.database().ref('group_chat/messages');
+    var newGroupMessageRef = groupChatRef.push();
+    newGroupMessageRef.set({
+        user: get_current_username(),
+        text: msg
+    });
+}
+
+</script>
+
 </head>
 <body>
+
 Hello World!
- <form action="/action_page.php">
-  Username: <input type="text" name="uname"><br>
-  Password: <input type="text" name="pword"><br>
-  <input type="submit" value="Submit">
-</form> 
+
+<div class="login"> <!-- They only see this if they are not logged-in -->
+
+  <form action="javascript:login(un.value, pw.value)">
+    Username: <input type="text" id="un"><br>
+    Password: <input type="password" id="pw"><br>
+    <input type="submit" value="Submit">
+  </form> 
+
+  </div>
+
+<div class="logged_in" style="display: none;">  <!-- They only see this if they are logged-in -->
+
+  <p>Username: <b><span id="username">blank</span></b> <input type="button" value="sign out" onclick="logout();"></p>
+  <div id="group_chat"></div>
+  <form action="javascript:sendGroupMessage(msg.value)">
+    Message: <input type="text" id="msg"> <input type="submit" value="send">
+  </form> 
+
+</div>
+
 </body>
 </html>
