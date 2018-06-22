@@ -25,35 +25,19 @@
 
 <script type="text/javascript">
 
-function showClass(class_label) {
-  var divsToShow = document.getElementsByClassName(class_label);
-  for(var i = 0; i < divsToShow.length; i++)
-  {
-    divsToShow[i].style.display="block";
-  }
-}
-
-function hideClass(class_label) {
-  var divsToHide = document.getElementsByClassName(class_label);
-  for(var i = 0; i < divsToHide.length; i++)
-  {
-    divsToHide[i].style.display="none";
-  }
-}
-
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
-    hideClass('login');
-    showClass('logged_in');
+    document.getElementById('logged_in').style.display="block";
+    document.getElementById('login').style.display="none";
     after_login(user);
   } else {
-    hideClass('logged_in');
-    showClass('login');
+    document.getElementById('logged_in').style.display="none";
+    document.getElementById('login').style.display="block";
   }
 });
 
 function login(un,pw) {
-    var email = un+'@sq3.org.uk';
+    var email = un+'@sq3.org.uk'; // firebase requires email address as username, so we make a dummy one
     firebase.auth().signInWithEmailAndPassword(email, pw).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -109,7 +93,7 @@ function sendGroupMessage(msg) {
 
 Hello World!
 
-<div class="login"> <!-- They only see this if they are not logged-in -->
+<div id="login"> <!-- They see this if they are not logged-in -->
 
   <form action="javascript:login(un.value, pw.value)">
     Username: <input type="text" id="un"><br>
@@ -119,7 +103,7 @@ Hello World!
 
   </div>
 
-<div class="logged_in" style="display: none;">  <!-- They only see this if they are logged-in -->
+<div id="logged_in" style="display: none;">  <!-- They only see this if they are logged-in -->
 
   <p>Username: <b><span id="username">blank</span></b> <input type="button" value="sign out" onclick="logout();"></p>
   <div id="group_chat"></div>
