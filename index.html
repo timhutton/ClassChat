@@ -126,6 +126,9 @@ body {
 .button {
     font-size: xx-large;
 }
+.large_font {
+    font-size: xx-large;
+}
 </style>
 
 </head>
@@ -136,19 +139,19 @@ body {
 <div id="login"> <!-- They see this if they are not logged-in -->
 
   <form action="javascript:login(un.value, pw.value)">
-    Username: <input type="text" id="un"><br>
-    Password: <input type="password" id="pw"><br>
-    <input type="submit" value="Submit" class="button">
+    Username: <input type="text" id="un" class="large_font"><br>
+    Password: <input type="password" id="pw" class="large_font"><br>
+    <input type="submit" value="Submit" class="large_font">
   </form> 
 
 </div>
 
 <div id="logged_in" style="display: none;">  <!-- They only see this if they are logged-in -->
 
-  <p>Username: <span class="username" id="username">blank</span> <input type="button" value="sign out" onclick="logout();" class="button"></p>
+  <p class="large_font">Username: <span class="username" id="username">blank</span> <input type="button" value="sign out" onclick="logout();" class="large_font"></p>
   <div class="group_chat" id="group_chat"></div>
   <form action="javascript:sendGroupMessage(msg.value)">
-    Message: <input type="text" id="msg" size="60" class="button"> <input type="submit" value="send" class="button">
+    Message: <input type="text" id="msg" size="30" class="button"> <input type="submit" value="send" class="button">
   </form> 
 
 </div>
