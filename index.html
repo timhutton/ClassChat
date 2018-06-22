@@ -28,12 +28,24 @@
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
-    document.getElementById('logged_in').style.display="block";
-    document.getElementById('login').style.display="none";
+    var elements = document.getElementsByClassName('logged_in');
+    for(var i=0, l=elements.length; i<l; i++){
+     elements[i].style.display = "block";
+    }
+    var elements = document.getElementsByClassName('login');
+    for(var i=0, l=elements.length; i<l; i++){
+     elements[i].style.display = "none";
+    }
     on_login(user);
   } else {
-    document.getElementById('logged_in').style.display="none";
-    document.getElementById('login').style.display="block";
+    var elements = document.getElementsByClassName('login');
+    for(var i=0, l=elements.length; i<l; i++){
+     elements[i].style.display = "block";
+    }
+    var elements = document.getElementsByClassName('logged_in');
+    for(var i=0, l=elements.length; i<l; i++){
+     elements[i].style.display = "none";
+    }
   }
 });
 
@@ -136,12 +148,17 @@ body {
 
 <table border="0px" cellpadding="20px">
 <tr>
-<td><h1>Hello World!</h1></td><td> 
+<td>
+<h1>Hello World!</h1>
+<div class="logged_in" style="display: none;">  <!-- They only see this if they are logged-in -->
+  <p class="large_font">Username: <span class="username" id="username">blank</span> <input type="button" value="sign out" onclick="logout();" class="large_font"></p>
+</div>
+</td><td> 
 <img src="kitten_in_pot.gif">
 </td></tr>
 </table>
 
-<div id="login"> <!-- They see this if they are not logged-in -->
+<div class="login"> <!-- They see this if they are not logged-in -->
 
   <form action="javascript:login(un.value, pw.value)">
     Username: <input type="text" id="un" class="large_font"><br>
@@ -151,9 +168,8 @@ body {
 
 </div>
 
-<div id="logged_in" style="display: none;">  <!-- They only see this if they are logged-in -->
+<div class="logged_in" style="display: none;">  <!-- They only see this if they are logged-in -->
 
-  <p class="large_font">Username: <span class="username" id="username">blank</span> <input type="button" value="sign out" onclick="logout();" class="large_font"></p>
   <div class="group_chat" id="group_chat"></div>
   <form action="javascript:sendGroupMessage(msg.value)">
     Message: <input type="text" id="msg" size="30" class="button"> <input type="submit" value="send" class="button">
