@@ -77,6 +77,7 @@ function get_current_username() {
 function get_pretty_time(t) {
     var now = Date.now();
     var sec = (now-t)/1000;
+    if(sec < 20 ) { return 'just now'; }
     if( sec < 60 ) { return sec.toFixed(0) + 's ago'; }
     var min = sec / 60;
     if( min < 60 ) { return min.toFixed(0) + 'min ago'; }
