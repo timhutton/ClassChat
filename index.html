@@ -60,6 +60,7 @@ function login(un,pw) {
 }
 
 function on_login(user) {
+    getUserDetails();
     // display their username
     document.getElementById("username").innerHTML = user.email.substring(0, user.email.lastIndexOf("@"));
     // make a live connection to the group chat messages
@@ -115,7 +116,7 @@ function sendGroupMessage(msg) {
 
 function updateGroupChat(msg) {
     var box = document.getElementById("group_chat");
-    box.innerHTML += msg.user + ' : ' + msg.text + ' (' + get_pretty_time(msg.time) + ')<br>';
+    box.innerHTML += '<span style="color:rgb(' +userdetails[get_current_username()][0]+','+userdetails[get_current_username()][1]+','+userdetails[get_current_username()][2]+')">'+msg.user + '</span> : ' + msg.text + '<br>';
     box.scrollTop = box.scrollHeight; // scroll to the bottom
 }
 
@@ -139,7 +140,11 @@ function DoFullScreen() {
         }
     }
 }
-
+function getUserDetails() {
+    firebase.database().ref('/users').once('value').then(function(snapshot) {
+        userdetails=snapshot.val();
+    });
+} 
 </script>
 
 <style>
