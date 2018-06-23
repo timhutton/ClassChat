@@ -60,15 +60,8 @@ function login(un,pw) {
 }
 
 function on_login(user) {
-    getUserDetails();
-    // display their username
-    document.getElementById("username").innerHTML = user.email.substring(0, user.email.lastIndexOf("@"));
-    // make a live connection to the group chat messages
-    document.getElementById("group_chat").innerHTML = "";
-    var groupChatRef = firebase.database().ref('group_chat/messages');
-    groupChatRef.on('child_added', function(data) {
-      updateGroupChat(data.val());
-    });
+    user = user.email.substring(0, user.email.lastIndexOf("@")) // snip off email part
+    getUserDetails(user);
 }
 
 function logout() {
@@ -114,9 +107,18 @@ function sendGroupMessage(msg) {
     document.getElementById("msg").value = ""; // clear the input box
 }
 
+function getUserColor(user) {
+    if( user in userdetails ) {
+        return 'rgb(' + userdetails[user][0] + ',' + userdetails[user][1] + ',' + userdetails[user][2] + ')';
+    }
+    else {
+        return 'rgb(0,0,0)';
+    }
+}
+
 function updateGroupChat(msg) {
     var box = document.getElementById("group_chat");
-    box.innerHTML += '<span style="color:rgb(' +userdetails[msg.user][0]+','+userdetails[msg.user][1]+','+userdetails[msg.user][2]+')">'+msg.user + '</span> : ' + msg.text + '<br>';
+    box.innerHTML += '<span style="color:' + getUserColor(msg.user) + '">' + msg.user + '</span> : ' + msg.text + '<br>';
     box.scrollTop = box.scrollHeight; // scroll to the bottom
 }
 
@@ -140,9 +142,18 @@ function DoFullScreen() {
         }
     }
 }
-function getUserDetails() {
+function getUserDetails(user) {
+    userdetails={};
     firebase.database().ref('/users').once('value').then(function(snapshot) {
         userdetails=snapshot.val();
+        // display their username
+        document.getElementById("username").innerHTML = '<span style="color:' + getUserColor(user) + '">' + user + '</span>';
+        // make a live connection to the group chat messages
+        document.getElementById("group_chat").innerHTML = "";
+        var groupChatRef = firebase.database().ref('group_chat/messages');
+        groupChatRef.on('child_added', function(data) {
+          updateGroupChat(data.val());
+        });
     });
 } 
 </script>
