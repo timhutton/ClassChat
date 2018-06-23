@@ -116,7 +116,7 @@ function sendGroupMessage(msg) {
 
 function updateGroupChat(msg) {
     var box = document.getElementById("group_chat");
-    box.innerHTML += '<span style="color:rgb(' +userdetails[get_current_username()][0]+','+userdetails[get_current_username()][1]+','+userdetails[get_current_username()][2]+')">'+msg.user + '</span> : ' + msg.text + '<br>';
+    box.innerHTML += '<span style="color:rgb(' +userdetails[msg.user][0]+','+userdetails[msg.user][1]+','+userdetails[msg.user][2]+')">'+msg.user + '</span> : ' + msg.text + '<br>';
     box.scrollTop = box.scrollHeight; // scroll to the bottom
 }
 
@@ -204,8 +204,6 @@ body {
   </form> 
 
 </div>
-
-<a href="#" onClick="DoFullScreen()">Full Screen Mode</a>
 
 </body>
 </html>
