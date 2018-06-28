@@ -1,0 +1,7 @@
+{
+  "short_name": "ClassChat",
+  "name": "Class Chat",
+  "gcm_sender_id": "103953800507",
+  "display": "standalone",
+  "orientation": "portrait"
+}
