@@ -83,16 +83,17 @@ function get_current_username() {
 function get_pretty_time(t) {
     var now = Date.now();
     var sec = (now-t)/1000;
-    if(sec < 20 ) { return 'just now'; }
-    if( sec < 60 ) { return sec.toFixed(0) + 's ago'; }
+    //if(sec < 20 ) { return 'just now'; }
+    //if( sec < 60 ) { return sec.toFixed(0) + 's ago'; }
     var min = sec / 60;
-    if( min < 60 ) { return min.toFixed(0) + 'min ago'; }
+    if( min < 20 ) { return ''; } // don't show time unless the message is old
+    if( min < 60 ) { return ' (' + min.toFixed(0) + ' min ago)'; }
     var hour = min / 60;
-    if( hour < 48 ) { return hour.toFixed(0) + 'hr ago'; }
+    if( hour < 48 ) { return ' (' + hour.toFixed(0) + ' hr ago)'; }
     var day = hour / 24;
-    if( day < 365*2 ) { return day.toFixed(0) + 'days ago'; }
+    if( day < 365*2 ) { return ' (' + day.toFixed(0) + ' days ago)'; }
     var year = day / 365;
-    return year.toFixed(0) + 'years ago';
+    return ' (' + year.toFixed(0) + 'years ago)';
 }
 
 function sendGroupMessage(msg) {
@@ -118,7 +119,7 @@ function getUserColor(user) {
 
 function updateGroupChat(msg) {
     var box = document.getElementById("group_chat");
-    box.innerHTML += '<span style="color:' + getUserColor(msg.user) + '">' + msg.user + '</span> : ' + msg.text + '<br>';
+    box.innerHTML += '<span style="color:' + getUserColor(msg.user) + '">' + msg.user + '</span> : ' + msg.text + get_pretty_time(msg.time) + '<br>';
     box.scrollTop = box.scrollHeight; // scroll to the bottom
 }
 
