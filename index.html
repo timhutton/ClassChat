@@ -12,6 +12,7 @@
 <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-messaging.js"></script>
 <script>
   // Initialize Firebase
   var config = {
@@ -144,6 +145,7 @@ function DoFullScreen() {
         }
     }
 }
+
 function getUserDetails(user) {
     userdetails={};
     firebase.database().ref('/users').once('value').then(function(snapshot) {
@@ -158,6 +160,11 @@ function getUserDetails(user) {
         });
     });
 } 
+
+// Retrieve Firebase Messaging object.
+const messaging = firebase.messaging();
+messaging.usePublicVapidKey("BHyIV0JFbzoR5TJxFY58YaDim_zMQVM_ukd9Dhd0u-CtHPqKkGifTP0O8ZU1qNkIJnQQI73rn3Q1HnOAaBj2xuA");
+
 </script>
 
 <style>
