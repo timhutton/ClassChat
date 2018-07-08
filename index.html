@@ -32,7 +32,7 @@
 
 <script type="text/javascript">
 
-function showHideClass(cls,show) {
+function setClassVisibility(cls,show) {
     var elements = document.getElementsByClassName(cls);
     for(var i=0, l=elements.length; i<l; i++){
         elements[i].style.display = show ? "block" : "none";
@@ -41,12 +41,12 @@ function showHideClass(cls,show) {
 
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-        showHideClass('logged_in',true);
-        showHideClass('login',false);
+        setClassVisibility('logged_in',true);
+        setClassVisibility('login',false);
         on_login(user);
     } else {
-        showHideClass('login',true);
-        showHideClass('logged_in',false);
+        setClassVisibility('login',true);
+        setClassVisibility('logged_in',false);
     }
 });
 
@@ -97,7 +97,7 @@ function on_login(user) {
 
 function logout() {
     firebase.auth().signOut().then(function() {
-        // (sign-out successful)
+        // sign-out successful, will trigger onAuthStateChanged
     }).catch(function(error) {
         // an error happened
         var errorCode = error.code;
@@ -107,8 +107,8 @@ function logout() {
 }
 
 function get_current_username() {
-    var user = firebase.auth().currentUser;
-    return user.email.substring(0, user.email.lastIndexOf("@"));
+    var email = firebase.auth().currentUser.email;
+    return email.substring(0, email.lastIndexOf("@"));
 }
 
 function get_pretty_time(t) {
@@ -216,8 +216,8 @@ function requestPermissionForNotify() {
     messaging.requestPermission().then(function() {
         console.log('Notification permission granted.');
         //resetUI();
-        showHideClass('need_notify_permission',false);
-        showHideClass('have_notify_permission',true);
+        setClassVisibility('need_notify_permission',false);
+        setClassVisibility('have_notify_permission',true);
     }).catch(function(err) {
         console.log('Unable to get permission to notify.', err);
     });
@@ -231,8 +231,8 @@ function revokePermissionForNotify() {
             setTokenSentToServer(false);
             // Once token is deleted update UI.
             //resetUI();
-            showHideClass('have_notify_permission',false);
-            showHideClass('need_notify_permission',true);
+            setClassVisibility('have_notify_permission',false);
+            setClassVisibility('need_notify_permission',true);
         }).catch(function(err) {
             console.log('Unable to delete token. ', err);
         });
