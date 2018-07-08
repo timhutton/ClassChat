@@ -14,50 +14,49 @@
 <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-messaging.js"></script>
 <script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyA2F8Dx3vrsLeFhS2E4fuILF5KmQKgWzWg",
-    authDomain: "classchat-becd1.firebaseapp.com",
-    databaseURL: "https://classchat-becd1.firebaseio.com",
-    projectId: "classchat-becd1",
-    storageBucket: "classchat-becd1.appspot.com",
-    messagingSenderId: "533251351200"
-  };
-  firebase.initializeApp(config);
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyA2F8Dx3vrsLeFhS2E4fuILF5KmQKgWzWg",
+        authDomain: "classchat-becd1.firebaseapp.com",
+        databaseURL: "https://classchat-becd1.firebaseio.com",
+        projectId: "classchat-becd1",
+        storageBucket: "classchat-becd1.appspot.com",
+        messagingSenderId: "533251351200"
+    };
+    firebase.initializeApp(config);
+
+    // Retrieve Firebase Messaging object.
+    const messaging = firebase.messaging();
+    messaging.usePublicVapidKey("BHyIV0JFbzoR5TJxFY58YaDim_zMQVM_ukd9Dhd0u-CtHPqKkGifTP0O8ZU1qNkIJnQQI73rn3Q1HnOAaBj2xuA");
 </script>
 
 <script type="text/javascript">
 
+function showHideClass(cls,show) {
+    var elements = document.getElementsByClassName(cls);
+    for(var i=0, l=elements.length; i<l; i++){
+        elements[i].style.display = show ? "block" : "none";
+    }
+}
+
 firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    var elements = document.getElementsByClassName('logged_in');
-    for(var i=0, l=elements.length; i<l; i++){
-     elements[i].style.display = "block";
+    if (user) {
+        showHideClass('logged_in',true);
+        showHideClass('login',false);
+        on_login(user);
+    } else {
+        showHideClass('login',true);
+        showHideClass('logged_in',false);
     }
-    var elements = document.getElementsByClassName('login');
-    for(var i=0, l=elements.length; i<l; i++){
-     elements[i].style.display = "none";
-    }
-    on_login(user);
-  } else {
-    var elements = document.getElementsByClassName('login');
-    for(var i=0, l=elements.length; i<l; i++){
-     elements[i].style.display = "block";
-    }
-    var elements = document.getElementsByClassName('logged_in');
-    for(var i=0, l=elements.length; i<l; i++){
-     elements[i].style.display = "none";
-    }
-  }
 });
 
 function login(un,pw) {
-    var email = un+'@sq3.org.uk'; // firebase requires email address as username, so we make a dummy one
+    var email = un+'@sq3.org.uk'; // (firebase requires email address as username, so we make a dummy one)
     firebase.auth().signInWithEmailAndPassword(email, pw).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      alert('Failed to login: '+errorMessage+'\n('+errorCode+')');
+        // handle errors here
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        alert('Failed to login: '+errorMessage+'\n('+errorCode+')');
     });
 }
 
@@ -68,12 +67,12 @@ function on_login(user) {
 
 function logout() {
     firebase.auth().signOut().then(function() {
-      // Sign-out successful.
+        // (sign-out successful)
     }).catch(function(error) {
-      // An error happened.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      alert('Failed to logout: '+errorMessage+'\n('+errorCode+')');
+        // an error happened
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        alert('Failed to logout: '+errorMessage+'\n('+errorCode+')');
     });
 }
 
@@ -126,44 +125,137 @@ function updateGroupChat(msg) {
 }
 
 function DoFullScreen() {
-    var isInFullScreen = (document.fullScreenElement && document.fullScreenElement !==     null) ||    // alternative standard method  
-            (document.mozFullScreen || document.webkitIsFullScreen);
+    var isInFullScreen = (document.fullScreenElement && document.fullScreenElement !== null) || (document.mozFullScreen || document.webkitIsFullScreen);
 
     var docElm = document.documentElement;
     if (!isInFullScreen) {
-
         if (docElm.requestFullscreen) {
             docElm.requestFullscreen();
         }
         else if (docElm.mozRequestFullScreen) {
             docElm.mozRequestFullScreen();
-            //alert("Mozilla entering fullscreen!");
         }
         else if (docElm.webkitRequestFullScreen) {
             docElm.webkitRequestFullScreen();
-            //alert("Webkit entering fullscreen!");
         }
     }
 }
 
 function getUserDetails(user) {
-    userdetails={};
+    userdetails = {};
     firebase.database().ref('/users').once('value').then(function(snapshot) {
-        userdetails=snapshot.val();
-        // display their username
-        document.getElementById("username").innerHTML = '<span style="color:' + getUserColor(user) + '">' + user + '</span>';
-        // make a live connection to the group chat messages
-        document.getElementById("group_chat").innerHTML = "";
-        var groupChatRef = firebase.database().ref('group_chat/messages');
-        groupChatRef.on('child_added', function(data) {
-          updateGroupChat(data.val());
-        });
+        userdetails = snapshot.val();
+        onHasUser(user);
     });
 } 
 
-// Retrieve Firebase Messaging object.
-const messaging = firebase.messaging();
-messaging.usePublicVapidKey("BHyIV0JFbzoR5TJxFY58YaDim_zMQVM_ukd9Dhd0u-CtHPqKkGifTP0O8ZU1qNkIJnQQI73rn3Q1HnOAaBj2xuA");
+function onHasUser(user) {
+    // display their username
+    document.getElementById("username").innerHTML = '<span style="color:' + getUserColor(user) + '">' + user + '</span>';
+    // make a live connection to the group chat messages
+    document.getElementById("group_chat").innerHTML = "";
+    var groupChatRef = firebase.database().ref('group_chat/messages');
+    groupChatRef.on('child_added', function(data) {
+        updateGroupChat(data.val());
+    });
+    // Get Instance ID token. Initially this makes a network call, once retrieved
+    // subsequent calls to getToken will return from cache.
+    messaging.getToken().then(function(currentToken) {
+        if (currentToken) {
+            sendTokenToServer(currentToken);
+            //updateUIForPushEnabled(currentToken);
+            showToken(currentToken);
+        } else {
+            // Show permission request.
+            console.log('No Instance ID token available. Request permission to generate one.');
+            // Show permission UI.
+            //updateUIForPushPermissionRequired();
+            setTokenSentToServer(false);
+        }
+    }).catch(function(err) {
+        console.log('An error occurred while retrieving token. ', err);
+        showToken('Error retrieving Instance ID token. ', err);
+        setTokenSentToServer(false);
+    });
+}
+
+function showToken(token) {
+    document.getElementById("notification_token").textContent = token;
+}
+    
+// Callback fired if Instance ID token is updated.
+messaging.onTokenRefresh(function() {
+    messaging.getToken().then(function(refreshedToken) {
+        console.log('Token refreshed.');
+        // Indicate that the new Instance ID token has not yet been sent to the
+        // app server.
+        setTokenSentToServer(false);
+        // Send Instance ID token to app server.
+        sendTokenToServer(refreshedToken);
+        // Display new Instance ID token and clear UI of all previous messages.
+        showToken(refreshedToken);
+        //resetUI();
+    }).catch(function(err) {
+        console.log('Unable to retrieve refreshed token ', err);
+        showToken('Unable to retrieve refreshed token ', err);
+    });
+});
+
+function sendTokenToServer(currentToken) {
+    if (!isTokenSentToServer()) {
+        console.log('Sending token to server...');
+        // TODO(developer): Send the current token to your server.
+        setTokenSentToServer(true);
+    } else {
+        console.log('Token already sent to server so won\'t send it again unless it changes');
+    }
+}
+
+function isTokenSentToServer() {
+    return window.localStorage.getItem('sentToServer') === '1';
+}
+
+function setTokenSentToServer(sent) {
+    window.localStorage.setItem('sentToServer', sent ? '1' : '0');
+}
+
+function requestPermissionForNotify() {
+    console.log('Requesting permission...');
+    messaging.requestPermission().then(function() {
+        console.log('Notification permission granted.');
+        //resetUI();
+        showHideClass('need_notify_permission',false);
+        showHideClass('have_notify_permission',true);
+    }).catch(function(err) {
+        console.log('Unable to get permission to notify.', err);
+    });
+}
+
+function revokePermissionForNotify() {
+    // Delete Instance ID token.
+    messaging.getToken().then(function(currentToken) {
+        messaging.deleteToken(currentToken).then(function() {
+            console.log('Token deleted.');
+            setTokenSentToServer(false);
+            // Once token is deleted update UI.
+            //resetUI();
+            showHideClass('have_notify_permission',false);
+            showHideClass('need_notify_permission',true);
+        }).catch(function(err) {
+            console.log('Unable to delete token. ', err);
+        });
+    }).catch(function(err) {
+        console.log('Error retrieving Instance ID token. ', err);
+        showToken('Error retrieving Instance ID token. ', err);
+    });
+}
+
+messaging.onMessage(function(payload) {
+    console.log('Message received. ', payload);
+    // Update the UI to include the received message.
+    //appendMessage(payload);
+    alert('Message received: ' + JSON.stringify(payload, null, 2));
+});
 
 </script>
 
@@ -197,7 +289,17 @@ body {
 <td>
 <h1>Hello World!</h1>
 <div class="logged_in" style="display: none;">  <!-- They only see this if they are logged-in -->
-  <p class="large_font">Username: <span class="username" id="username"></span> <input type="button" value="sign out" onclick="logout();" class="large_font"></p>
+  <p class="large_font">
+    Username: <span class="username" id="username"></span>
+    <button onclick="logout();" class="large_font">sign out</button>
+  </p>
+  <div class="need_notify_permission">
+    <p><button onclick="requestPermissionForNotify();" class="large_font">allow notifications</button></p>
+  </div>
+  <div class="have_notify_permission" style="display: none;">
+    <p id="notification_token" class="large_font">[notification token]</p>
+    <button onclick="revokePermissionForNotify();" class="large_font">unsubscribe from notifications</button>
+  </div>
 </div>
 </td><td> 
 <img src="kitten_in_pot.gif"></td>
@@ -220,7 +322,9 @@ body {
 
   <div class="group_chat" id="group_chat"></div>
   <form action="javascript:sendGroupMessage(msg.value)">
-    Message: <input type="text" id="msg" size="30" class="button"> <input type="submit" value="send" class="button">
+    Message:
+    <input type="text" id="msg" size="30" class="button">
+    <input type="submit" value="send" class="button">
   </form> 
 
 </div>
