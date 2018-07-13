@@ -29,9 +29,9 @@ firebase.initializeApp(config);
 const messaging = firebase.messaging();
 messaging.usePublicVapidKey("BHyIV0JFbzoR5TJxFY58YaDim_zMQVM_ukd9Dhd0u-CtHPqKkGifTP0O8ZU1qNkIJnQQI73rn3Q1HnOAaBj2xuA");
 
-navigator.serviceworker.register('/ClassChat/firebase-messaging-sw.js')
+navigator.serviceWorker.register('/ClassChat/firebase-messaging-sw.js')
 .then((registration) => {
-  messaging.useServiceworker(registration);
+  messaging.useServiceWorker(registration);
 });
 
 function setClassVisibility(cls,show) {
