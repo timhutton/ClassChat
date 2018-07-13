@@ -13,24 +13,26 @@
 <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-messaging.js"></script>
-<script>
-    // Initialize Firebase
-    var config = {
-        apiKey: "AIzaSyA2F8Dx3vrsLeFhS2E4fuILF5KmQKgWzWg",
-        authDomain: "classchat-becd1.firebaseapp.com",
-        databaseURL: "https://classchat-becd1.firebaseio.com",
-        projectId: "classchat-becd1",
-        storageBucket: "classchat-becd1.appspot.com",
-        messagingSenderId: "533251351200"
-    };
-    firebase.initializeApp(config);
-
-    // Retrieve Firebase Messaging object.
-    const messaging = firebase.messaging();
-    messaging.usePublicVapidKey("BHyIV0JFbzoR5TJxFY58YaDim_zMQVM_ukd9Dhd0u-CtHPqKkGifTP0O8ZU1qNkIJnQQI73rn3Q1HnOAaBj2xuA");
-</script>
-
 <script type="text/javascript">
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyA2F8Dx3vrsLeFhS2E4fuILF5KmQKgWzWg",
+    authDomain: "classchat-becd1.firebaseapp.com",
+    databaseURL: "https://classchat-becd1.firebaseio.com",
+    projectId: "classchat-becd1",
+    storageBucket: "classchat-becd1.appspot.com",
+    messagingSenderId: "533251351200"
+};
+firebase.initializeApp(config);
+
+// Retrieve Firebase Messaging object.
+const messaging = firebase.messaging();
+messaging.usePublicVapidKey("BHyIV0JFbzoR5TJxFY58YaDim_zMQVM_ukd9Dhd0u-CtHPqKkGifTP0O8ZU1qNkIJnQQI73rn3Q1HnOAaBj2xuA");
+
+navigator.serviceworker.register('/ClassChat/firebase-messaging-sw.js')
+.then((registration) => {
+  messaging.useServiceworker(registration);
+});
 
 function setClassVisibility(cls,show) {
     var elements = document.getElementsByClassName(cls);
