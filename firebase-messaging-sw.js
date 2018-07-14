@@ -19,7 +19,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
   // Customize notification here
   var notificationTitle = payload.data.title;
   var notificationOptions = {
-    body: 'Background Message body.',
+    body: payload.data.body,
     icon: 'icon.png',
     click_action: 'https://timhutton.github.io/ClassChat/'
   };
