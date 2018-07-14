@@ -20,10 +20,18 @@ messaging.setBackgroundMessageHandler(function(payload) {
   var notificationTitle = payload.data.title;
   var notificationOptions = {
     body: payload.data.body,
-    icon: 'icon.png',
-    click_action: 'https://timhutton.github.io/ClassChat/'
+    icon: 'icon.png'
   };
 
   return self.registration.showNotification(notificationTitle,
     notificationOptions);
+});
+
+self.addEventListener('notificationclick', function(event) {
+  const clickedNotification = event.notification;
+  clickedNotification.close();
+
+  const page = 'ClassChat/index.html';
+  const promiseChain = clients.openWindow(page);
+  event.waitUntil(promiseChain);
 });
