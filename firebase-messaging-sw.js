@@ -31,7 +31,7 @@ self.addEventListener('notificationclick', function(event) {
   const clickedNotification = event.notification;
   clickedNotification.close();
 
-  const page = 'index.html';
+  const page = 'ClassChat/index.html';
   const urlToOpen = new URL(page, self.location.origin).href;
 
   const promiseChain = clients.matchAll({
