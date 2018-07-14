@@ -29,9 +29,10 @@ firebase.initializeApp(config);
 const messaging = firebase.messaging();
 messaging.usePublicVapidKey("BHyIV0JFbzoR5TJxFY58YaDim_zMQVM_ukd9Dhd0u-CtHPqKkGifTP0O8ZU1qNkIJnQQI73rn3Q1HnOAaBj2xuA");
 
+// Specify service worker for notifications.
 navigator.serviceWorker.register('/ClassChat/firebase-messaging-sw.js')
 .then((registration) => {
-  messaging.useServiceWorker(registration);
+    messaging.useServiceWorker(registration);
 });
 
 function setClassVisibility(cls,show) {
@@ -197,7 +198,7 @@ messaging.onTokenRefresh(function() {
 
 function sendTokenToServer(currentToken) {
     if (!isTokenSentToServer()) {
-        console.log('Sending token to server...');
+        //console.log('Sending token to server...');
         // TODO(developer): Send the current token to your server.
         setTokenSentToServer(true);
     } else {
@@ -248,7 +249,7 @@ messaging.onMessage(function(payload) {
     console.log('Message received. ', payload);
     // Update the UI to include the received message.
     //appendMessage(payload);
-    alert('Message received: ' + JSON.stringify(payload, null, 2));
+    //alert('Message received: ' + JSON.stringify(payload, null, 2));
 });
 
 </script>
