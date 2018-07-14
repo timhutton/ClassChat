@@ -31,7 +31,7 @@ self.addEventListener('notificationclick', function(event) {
   const clickedNotification = event.notification;
   clickedNotification.close();
 
-  const page = 'ClassChat/index.html';
+  const page = 'index.html';
   const promiseChain = clients.openWindow(page);
   event.waitUntil(promiseChain);
 });
