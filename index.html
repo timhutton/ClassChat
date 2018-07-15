@@ -65,6 +65,7 @@ function login(un,pw) {
 
 function on_login(user) {
     user = user.email.substring(0, user.email.lastIndexOf("@")) // snip off email part
+    console.log('Logged in as ',user);
     userdetails = {};
     firebase.database().ref('/users').once('value').then(function(snapshot) {
         userdetails = snapshot.val();
@@ -198,7 +199,7 @@ messaging.onTokenRefresh(function() {
 
 function sendTokenToServer(currentToken) {
     if (!isTokenSentToServer()) {
-        console.log('Sending token to server...');
+        console.log('Sending token to server at users/'+user+'/tokens ...');
         var tokenRef = firebase.database().ref('users/'+user+'/tokens').once('value', function(snapshot) {
             if(snapshot.exists()) {
                 var tokens = snapshot.val();
