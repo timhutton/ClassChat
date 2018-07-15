@@ -42,11 +42,11 @@ function setClassVisibility(cls,show) {
     }
 }
 
-firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
+firebase.auth().onAuthStateChanged(function(user_email) {
+    if (user_email) {
         setClassVisibility('logged_in',true);
         setClassVisibility('login',false);
-        on_login(user);
+        on_login(user_email);
     } else {
         setClassVisibility('login',true);
         setClassVisibility('logged_in',false);
@@ -63,8 +63,8 @@ function login(un,pw) {
     });
 }
 
-function on_login(user) {
-    user = user.email.substring(0, user.email.lastIndexOf("@")) // snip off email part
+function on_login(user_email) {
+    user = user_email.email.substring(0, user_email.email.lastIndexOf("@")) // snip off email part
     console.log('Logged in as ',user);
     userdetails = {};
     firebase.database().ref('/users').once('value').then(function(snapshot) {
