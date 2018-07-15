@@ -143,8 +143,8 @@ function sendGroupMessage(msg) {
 }
 
 function getUserColor(user) {
-    if( user in userdetails ) {
-        return 'rgb(' + userdetails[user][0] + ',' + userdetails[user][1] + ',' + userdetails[user][2] + ')';
+    if( user in userdetails && userdetails[user].hasOwnProperty('color') ) {
+        return 'rgb(' + userdetails[user].color[0] + ',' + userdetails[user].color[1] + ',' + userdetails[user].color[2] + ')';
     }
     else {
         return 'rgb(0,0,0)';
