@@ -212,7 +212,7 @@ function sendTokenToServer(currentToken) {
                 }
             }
             else {
-                tokenRef.set([currentToken]);
+                tokenRef.push().set([currentToken]);
             }
         });
         
