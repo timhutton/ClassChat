@@ -200,19 +200,22 @@ messaging.onTokenRefresh(function() {
 function sendTokenToServer(currentToken) {
     if (!isTokenSentToServer()) {
         console.log('Sending token to server at users/'+user+'/tokens ...');
-        var tokenRef = firebase.database().ref('users/'+user+'/tokens').once('value', function(snapshot) {
+        var tokenRef = firebase.database().ref('users/'+user+'/tokens');
+        tokenRef.once('value', function(snapshot) {
             if(snapshot.exists()) {
                 var tokens = snapshot.val();
+                console.log('Tokens list already exists. tokens=',tokens);
                 if(!(currentToken in tokens)) { 
                     tokenRef.push().set(currentToken);
                     console.log('Token logged');
                 }
                 else {
-                    console.log('Token already logged. tokens=',tokens);
+                    console.log('Token already present.);
                 }
             }
             else {
-                tokenRef.push().set([currentToken]);
+                tokenRef.set([currentToken]);
+                console.log('Tokens list created');
             }
         });
         
