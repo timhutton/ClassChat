@@ -198,8 +198,23 @@ messaging.onTokenRefresh(function() {
 
 function sendTokenToServer(currentToken) {
     if (!isTokenSentToServer()) {
-        //console.log('Sending token to server...');
-        // TODO(developer): Send the current token to your server.
+        console.log('Sending token to server...');
+        var tokenRef = firebase.database().ref('users/'+user+'/tokens').once('value', function(snapshot) {
+            if(snapshot.exists()) {
+                var tokens = snapshot.val();
+                if(!(currentToken in tokens)) { 
+                    tokenRef.push().set(currentToken);
+                    console.log('Token logged');
+                }
+                else {
+                    console.log('Token already logged. tokens=',tokens);
+                }
+            }
+            else {
+                tokenRef.set([currentToken]);
+            }
+        });
+        
         setTokenSentToServer(true);
     } else {
         console.log('Token already sent to server so won\'t send it again unless it changes');
