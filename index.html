@@ -30,8 +30,7 @@ const messaging = firebase.messaging();
 messaging.usePublicVapidKey("BHyIV0JFbzoR5TJxFY58YaDim_zMQVM_ukd9Dhd0u-CtHPqKkGifTP0O8ZU1qNkIJnQQI73rn3Q1HnOAaBj2xuA");
 
 // Specify service worker for notifications.
-navigator.serviceWorker.register('/ClassChat/firebase-messaging-sw.js')
-.then((registration) => {
+navigator.serviceWorker.register('/ClassChat/firebase-messaging-sw.js').then((registration) => {
     messaging.useServiceWorker(registration);
 });
 
@@ -69,6 +68,7 @@ function on_login(user_email) {
     userdetails = {};
     firebase.database().ref('/users').once('value').then(function(snapshot) {
         userdetails = snapshot.val();
+        console.log('Retrieved entire userdetails node:',userdetails);
     });
     // display their username
     document.getElementById("username").innerHTML = '<span style="color:' + getUserColor(user) + '">' + user + '</span>';
@@ -82,6 +82,7 @@ function on_login(user_email) {
     // subsequent calls to getToken will return from cache.
     messaging.getToken().then(function(currentToken) {
         if (currentToken) {
+            console.log('Current token:',currentToken);
             sendTokenToServer(currentToken);
             //updateUIForPushEnabled(currentToken);
             showToken(currentToken);
