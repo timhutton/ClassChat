@@ -236,7 +236,6 @@ function requestPermissionForNotify() {
     console.log('Requesting permission...');
     messaging.requestPermission().then(function() {
         console.log('Notification permission granted.');
-        //resetUI();
         setClassVisibility('need_notify_permission',false);
         setClassVisibility('have_notify_permission',true);
     }).catch(function(err) {
@@ -245,13 +244,15 @@ function requestPermissionForNotify() {
 }
 
 function revokePermissionForNotify() {
-    // Delete Instance ID token.
     messaging.getToken().then(function(currentToken) {
         messaging.deleteToken(currentToken).then(function() {
+            var tokenRef = firebase.database().ref('notification_tokens/'+user);
+            tokenRef.orderByValue().equalTo(current_token).on('child_added', function(snapshot) {
+                snapshot.ref().remove();
+            });
             console.log('Token deleted.');
             setTokenSentToServer(false);
             // Once token is deleted update UI.
-            //resetUI();
             setClassVisibility('have_notify_permission',false);
             setClassVisibility('need_notify_permission',true);
         }).catch(function(err) {
