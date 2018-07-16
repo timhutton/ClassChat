@@ -84,13 +84,15 @@ function on_login(user_email) {
         if (currentToken) {
             console.log('Current token:',currentToken);
             sendTokenToServer(currentToken);
-            //updateUIForPushEnabled(currentToken);
-            showToken(currentToken);
+            setClassVisibility('need_notify_permission',false);
+            setClassVisibility('have_notify_permission',true);
+            document.getElementById("notification_token").textContent = currentToken;
         } else {
             // Show permission request.
             console.log('No Instance ID token available. Request permission to generate one.');
             // Show permission UI.
-            //updateUIForPushPermissionRequired();
+            setClassVisibility('have_notify_permission',false);
+            setClassVisibility('need_notify_permission',true);
             setTokenSentToServer(false);
         }
     }).catch(function(err) {
@@ -176,10 +178,6 @@ function DoFullScreen() {
     }
 }
 
-function showToken(token) {
-    document.getElementById("notification_token").textContent = token;
-}
-    
 // Callback fired if Instance ID token is updated.
 messaging.onTokenRefresh(function() {
     messaging.getToken().then(function(refreshedToken) {
