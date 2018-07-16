@@ -247,7 +247,7 @@ function revokePermissionForNotify() {
     messaging.getToken().then(function(currentToken) {
         messaging.deleteToken(currentToken).then(function() {
             var tokenRef = firebase.database().ref('notification_tokens/'+user);
-            tokenRef.orderByValue().equalTo(current_token).on('child_added', function(snapshot) {
+            tokenRef.orderByValue().equalTo(currentToken).on('child_added', function(snapshot) {
                 snapshot.ref().remove();
             });
             console.log('Token deleted.');
