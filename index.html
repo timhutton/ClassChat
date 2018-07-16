@@ -199,7 +199,7 @@ messaging.onTokenRefresh(function() {
 function sendTokenToServer(currentToken) {
     if (!isTokenSentToServer()) {
         console.log('Sending token to server at notification_tokens/'+user+' ...');
-        var tokenRef = firebase.database().ref('notification_tokens/'+user');
+        var tokenRef = firebase.database().ref('notification_tokens/'+user);
         tokenRef.once('value', function(snapshot) {
             if(snapshot.exists()) {
                 var tokens = snapshot.val();
