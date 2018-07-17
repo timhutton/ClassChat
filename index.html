@@ -249,8 +249,8 @@ function revokePermissionForNotify() {
             var tokenRef = firebase.database().ref('notification_tokens/'+user);
             tokenRef.orderByValue().equalTo(currentToken).on('child_added', function(snapshot) {
                 snapshot.ref().remove();
+                console.log('Token deleted.');
             });
-            console.log('Token deleted.');
             setTokenSentToServer(false);
             // Once token is deleted update UI.
             setClassVisibility('have_notify_permission',false);
